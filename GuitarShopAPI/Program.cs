@@ -1,5 +1,10 @@
 
+using Microsoft.Data.SqlClient;
+using MyGuitarShop.Data.Ado.Factories;
+using System;
+using System.Data;
 using System.Diagnostics;
+
 
 namespace GuitarShopAPI
 {
@@ -12,6 +17,8 @@ namespace GuitarShopAPI
                 var builder = WebApplication.CreateBuilder(args);
 
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+
 
                 AddServices(builder);
 
@@ -46,6 +53,9 @@ namespace GuitarShopAPI
         {
             var connection_string = builder.Configuration.GetConnectionString("MyGuitarShop")
                 ?? throw new InvalidOperationException("MyGuitarShop connection string not found.");
+
+            builder.Services.AddSingleton(new SqlConnectionFactory(connection_string));
+            builder.Services.AddControllers();
         }
 
         private static void ConfigureApplication(WebApplication app)
