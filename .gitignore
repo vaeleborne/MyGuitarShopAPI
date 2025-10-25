@@ -1,0 +1,52 @@
+##########################
+## Build Artifacts
+##########################
+bin/
+obj/
+out/
+artifacts/
+
+# Roslyn cache
+*.ide/
+
+##########################
+## Visual Studio
+##########################
+.vs/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+
+##########################
+## VS Code
+##########################
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+
+##########################
+## Logs / Dumps
+##########################
+*.log
+*.tlog
+*.dmp
+
+##########################
+## Environment / Secrets
+##########################
+# dotnet user secrets (auto-excluded but can never be TOO safe)
+**/secrets.json
+
+
+##########################
+## OS Artifacts
+##########################
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
