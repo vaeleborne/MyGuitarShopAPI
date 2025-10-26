@@ -10,5 +10,12 @@ namespace MyGuitarShop.Data.Ado.Factories
             return connection; 
         }
 
+        public async Task<SqlConnection> OpenSqlConnectionAsync()
+        {
+            var connection =  new SqlConnection(connection_string);
+            await connection.OpenAsync();
+            return connection;
+        }
+
     }
 }
