@@ -1,5 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using MyGuitarShop.Common.DTOs;
+using MyGuitarShop.Common.Interfaces;
 using MyGuitarShop.Data.Ado.Entities;
 using MyGuitarShop.Data.Ado.Factories;
 using System;
@@ -7,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MyGuitarShop.Common.Interfaces;
 
 namespace MyGuitarShop.Data.Ado.Repositories
 {
@@ -69,14 +70,38 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
         }
 
-        public Task<int> InsertAsync(ProductEntity entity)
+        public Task<int> InsertAsync(ProductDTO dto)
         {
             throw new NotImplementedException();
+
+            //DateTime.UtcNow
         }
 
-        public Task<int> UpdateAsync(ProductEntity entity)
+        public async Task<int> UpdateAsync(ProductDTO dto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //Setting up the command and parameters
+                var parameters = new List<SqlParameterModel>
+                {
+                    new("@ProductID", System.Data.SqlDbType.Int, dto.ProductID!),
+                    new("@ProductName",  System.Data.SqlDbType.Text, dto.ProductName!),
+                    new("@ListPrice", System.Data.SqlDbType.Money, dto.ListPrice!),
+                    new("@DiscountPercent", System.Data.SqlDbType.Decimal, dto.DiscountPercent!)
+                };
+
+                const string cmd = @"UPDATE Products
+                                        SET ProductName = @ProductName, ListPrice = @ListPrice, DiscountPercent = @DiscountPercent
+                                        WHERE ProductID = @ProductID";
+
+                //Execute the command
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+            }
+            catch (Exception ex) 
+            {
+                logger.LogError(ex.Message, "Error updating the product");
+                throw new Exception(ex.Message, ex);
+            }
         }
     }
 }

@@ -56,10 +56,37 @@ namespace MyGuitarShop.Data.Ado.Repositories
                         param.Value = p.Value ?? DBNull.Value;
                     }
                 }
-
                 return await command.ExecuteReaderAsync(CommandBehavior.CloseConnection);
             }
             catch (Exception ex) 
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        public static async Task<int> ConnectAndExecuteNonQuery(
+            SqlConnectionFactory connectionFactory,
+            string cmd,
+            IEnumerable<SqlParameterModel>? parameters = null
+            )
+        {
+            try
+            {
+                var conn = await connectionFactory.OpenSqlConnectionAsync();
+                await using var command = new SqlCommand(cmd, conn);
+
+                if (parameters != null)
+                {
+                    foreach (var p in parameters)
+                    {
+                        var param = command.Parameters.Add(p.Name, p.Type);
+                        param.Value = p.Value ?? DBNull.Value;
+                    }
+                }
+                return await command.ExecuteNonQueryAsync();
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

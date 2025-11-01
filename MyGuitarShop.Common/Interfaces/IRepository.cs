@@ -10,8 +10,8 @@ namespace MyGuitarShop.Common.Interfaces
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> FindByIdAsync(int id);
-        Task<int> InsertAsync(T entity);
-        Task<int> UpdateAsync(T entity);
+        Task<int> InsertAsync(T dto);
+        Task<int> UpdateAsync(T dto);
         Task<int> DeleteAsync(int id);
     }
 }
