@@ -20,8 +20,6 @@ namespace GuitarShopAPI
 
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-
-
                 AddServices(builder);
 
                 // Add services to the container.
