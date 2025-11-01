@@ -9,7 +9,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
     internal interface IRepository<T>
     {
         Task<IEnumerable<T>> GetAllAsync();
-        Task<T?> FindByIdAsync();
+        Task<T?> FindByIdAsync(int id);
         Task<int> InsertAsync(T entity);
         Task<int> UpdateAsync(T entity);
         Task<int> DeleteAsync(int id);
