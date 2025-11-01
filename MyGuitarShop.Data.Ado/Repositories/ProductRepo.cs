@@ -10,11 +10,24 @@ using System.Threading.Tasks;
 
 namespace MyGuitarShop.Data.Ado.Repositories
 {
-    public class ProductRepo (
+    public class ProductRepo
+    (
         ILogger<ProductRepo> logger,
-        SqlConnectionFactory connectionFactory)
+        SqlConnectionFactory connectionFactory
+    ) 
+    : IRepository<ProductEntity> 
     {
-        public async Task<IEnumerable<ProductEntity>> GetAllProductsAsync()
+        public Task<int> DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ProductEntity?> FindByIdAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<ProductEntity>> GetAllAsync()
         {
             var products = new List<ProductEntity>();
 
@@ -46,6 +59,16 @@ namespace MyGuitarShop.Data.Ado.Repositories
                 logger.LogError(ex.Message, "Error retrieving product list");
             }
             return products;
+        }
+
+        public Task<int> InsertAsync(ProductEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdateAsync(ProductEntity entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }
