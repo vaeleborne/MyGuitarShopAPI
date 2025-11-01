@@ -70,18 +70,19 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
         }
 
-        public Task<int> InsertAsync(ProductDTO dto)
+        public Task<int> InsertAsync(ProductEntity entity)
         {
             throw new NotImplementedException();
 
             //DateTime.UtcNow
         }
 
-        public async Task<int> UpdateAsync(ProductDTO dto)
+        public async Task<int> UpdateAsync(ProductEntity entity)
         {
             try
             {
                 //Setting up the command and parameters
+                ProductDTO dto = ProductMapper.ToDto(entity);
                 var parameters = new List<SqlParameterModel>
                 {
                     new("@ProductID", System.Data.SqlDbType.Int, dto.ProductID!),
