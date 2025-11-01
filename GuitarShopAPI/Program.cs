@@ -27,6 +27,7 @@ namespace GuitarShopAPI
                 builder.Services.AddControllers();
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
+                AddLogging(builder);
 
                 var app = builder.Build();
 

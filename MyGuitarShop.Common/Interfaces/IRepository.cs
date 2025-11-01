@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyGuitarShop.Data.Ado.Repositories
+namespace MyGuitarShop.Common.Interfaces
 {
-    internal interface IRepository<T>
+    public interface IRepository<T>
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> FindByIdAsync(int id);

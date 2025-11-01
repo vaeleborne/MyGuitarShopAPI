@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MyGuitarShop.Common.Interfaces;
 
 namespace MyGuitarShop.Data.Ado.Repositories
 {
@@ -15,7 +16,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         ILogger<ProductRepo> logger,
         SqlConnectionFactory connectionFactory
     ) 
-    : IRepository<ProductEntity> 
+    :  IRepository<ProductEntity> 
     {
         public Task<int> DeleteAsync(int id)
         {
@@ -44,10 +45,10 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
             catch (Exception ex )
             {
-                logger.LogError(ex.Message, $"Error retrieving product with id: {id}");
+                logger.LogError(ex.Message, $"Error retrieving product with id: {id}", ex);
+                throw new Exception(ex.Message, ex);
             }
 
-            return null;
         }
 
         public async Task<IEnumerable<ProductEntity>> GetAllAsync()
@@ -64,8 +65,8 @@ namespace MyGuitarShop.Data.Ado.Repositories
             catch (Exception ex)
             {
                 logger.LogError(ex.Message, "Error retrieving product list");
+                throw new Exception(ex.Message, ex);
             }
-            return new List<ProductEntity>(); 
         }
 
         public Task<int> InsertAsync(ProductEntity entity)
