@@ -9,7 +9,7 @@ namespace MyGuitarShop.Data.Ado.Entities
 {
     public class ProductEntity
     {
-        public required int ProductId { get; set; }
+        public required int ProductID { get; set; }
         public int? CategoryID { get; set; }
 
         [MaxLength(10)]

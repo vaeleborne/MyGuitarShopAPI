@@ -14,7 +14,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         {
             return new ProductDTO()
             {
-                ProductID = entity.ProductId,
+                ProductID = entity.ProductID,
                 CategoryID = entity.CategoryID,
                 ProductCode = entity.ProductCode,
                 ProductName = entity.ProductName,
@@ -32,7 +32,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
             return new ProductEntity()
             {
-                ProductId = dto.ProductID.Value,
+                ProductID = dto.ProductID.Value,
                 CategoryID = dto.CategoryID,
                 ProductName = dto.ProductName,
                 ProductCode = dto.ProductCode ?? "",

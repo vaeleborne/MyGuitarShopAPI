@@ -99,7 +99,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                 await reader.ReadAsync();
                 var product = new ProductEntity
                 {
-                    ProductId = reader.GetInt32(reader.GetOrdinal("ProductID")),
+                    ProductID = reader.GetInt32(reader.GetOrdinal("ProductID")),
                     CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
                     ProductCode = reader.GetString(reader.GetOrdinal("ProductCode")),
                     ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
@@ -126,7 +126,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                 {
                     var product = new ProductEntity
                     {
-                        ProductId = reader.GetInt32(reader.GetOrdinal("ProductID")),
+                        ProductID = reader.GetInt32(reader.GetOrdinal("ProductID")),
                         CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
                         ProductCode = reader.GetString(reader.GetOrdinal("ProductCode")),
                         ProductName = reader.GetString(reader.GetOrdinal("ProductName")),

@@ -19,11 +19,58 @@ namespace MyGuitarShop.Data.Ado.Repositories
     ) 
     :  IRepository<ProductEntity> 
     {
-        public Task<int> DeleteAsync(int id)
+        #region CREATION_TASKS
+        public async Task<int> InsertAsync(ProductEntity entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //Setting up the command and parameters
+                ProductDTO dto = ProductMapper.ToDto(entity);
+                var parameters = new List<SqlParameterModel>
+                {
+                    new("@CategoryID", System.Data.SqlDbType.Int, dto.CategoryID!),
+                    new("@ProductCode", System.Data.SqlDbType.Text, dto.ProductCode!),
+                    new("@ProductName",  System.Data.SqlDbType.Text, dto.ProductName!),
+                    new("@Description", System.Data.SqlDbType.Text, dto.Description!),
+                    new("@ListPrice", System.Data.SqlDbType.Money, dto.ListPrice!),
+                    new("@DiscountPercent", System.Data.SqlDbType.Decimal, dto.DiscountPercent!),
+                    new("@DateAdded", System.Data.SqlDbType.DateTime, dto.DateAdded!)
+                };
+
+                const string cmd = @"INSERT INTO Products 
+                                        (
+                                            CategoryID, 
+                                            ProductCode, 
+                                            ProductName, 
+                                            Description,
+                                            ListPrice, 
+                                            DiscountPercent,
+                                            DateAdded
+                                        )
+                                        VALUES 
+                                        (
+                                            @CategoryID,
+                                            @ProductCode,
+                                            @ProductName,
+                                            @Description,
+                                            @ListPrice,
+                                            @DiscountPercent,
+                                            @DateAdded
+                                        )";
+
+                //Execute the command
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message, "Error inserting the product");
+                throw new Exception(ex.Message, ex);
+            }
         }
 
+        #endregion
+
+        #region READ_TASKS
         public async Task<ProductEntity?> FindByIdAsync(int id)
         {
             try
@@ -34,24 +81,55 @@ namespace MyGuitarShop.Data.Ado.Repositories
                     new("@ProductID", System.Data.SqlDbType.Int, id)
                 };
 
-                var cmd = $"SELECT * FROM Products WHERE productID = {id}";
-                using SqlDataReader? reader =   await RepoHelpers.ConnectAndGetReader(
-                                                connectionFactory, 
-                                                $"SELECT * FROM Products WHERE productID = @ProductID",
+                var cmd = $"SELECT * FROM Products WHERE productID = @ProductID";
+                using SqlDataReader? reader = await RepoHelpers.ConnectAndGetReader(
+                                                connectionFactory,
+                                                cmd,
                                                 parameters);
-               
+
                 //Reader Parsing
                 var product = reader != null ? await RepoHelpers.GetSingleProductFromReader(reader) : null;
                 return product;
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
                 logger.LogError(ex.Message, $"Error retrieving product with id: {id}", ex);
                 throw new Exception(ex.Message, ex);
             }
 
         }
+        public async Task<ProductEntity?> FindByUniqueAsync(string productName)
+        {
+            try
+            {
+                //Connection Setup & Execution
+                var parameters = new List<SqlParameterModel>
+                {
+                    new("@ProductName", System.Data.SqlDbType.VarChar, productName)
+                };
 
+                var cmd = $"SELECT * FROM Products WHERE productName = @ProductName";
+                using SqlDataReader? reader = await RepoHelpers.ConnectAndGetReader(
+                                                connectionFactory,
+                                                cmd,
+                                                parameters);
+
+                //Reader Parsing
+                var product = reader != null ? await RepoHelpers.GetSingleProductFromReader(reader) : null;
+                return product;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message, $"Error retrieving product with product name: {productName}", ex);
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets all Products from Products in the DB
+        /// </summary>
+        /// <returns>A list of Products, or null </returns>
+        /// <exception cref="Exception">Will log then throw again</exception>
         public async Task<IEnumerable<ProductEntity>> GetAllAsync()
         {
             try
@@ -62,21 +140,16 @@ namespace MyGuitarShop.Data.Ado.Repositories
                 //Reader Parsing
                 var products = reader != null ? await RepoHelpers.GetProductsFromReader(reader) : null;
                 return products ?? new List<ProductEntity>();
-            } 
+            }
             catch (Exception ex)
             {
                 logger.LogError(ex.Message, "Error retrieving product list");
                 throw new Exception(ex.Message, ex);
             }
         }
+        #endregion
 
-        public Task<int> InsertAsync(ProductEntity entity)
-        {
-            throw new NotImplementedException();
-
-            //DateTime.UtcNow
-        }
-
+        #region UPDATE_TASKS
         public async Task<int> UpdateAsync(ProductEntity entity)
         {
             try
@@ -98,11 +171,38 @@ namespace MyGuitarShop.Data.Ado.Repositories
                 //Execute the command
                 return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 logger.LogError(ex.Message, "Error updating the product");
                 throw new Exception(ex.Message, ex);
             }
         }
+        #endregion
+
+        #region DELETE_TASKS
+        public async Task<int> DeleteAsync(int id)
+        {
+            try
+            {
+                //Setting up the command and parameters
+                var parameters = new List<SqlParameterModel>
+                {
+                    new("@ProductID", System.Data.SqlDbType.Int, id)
+                };
+
+                const string cmd = @"DELETE Products
+                                        WHERE ProductID = @ProductID";
+
+                //Execute the command
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message, "Error deleting the product");
+                throw new Exception(ex.Message, ex);
+            }
+        }
+        #endregion
+
     }
 }
