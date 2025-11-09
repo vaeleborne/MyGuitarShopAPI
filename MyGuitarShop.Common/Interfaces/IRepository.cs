@@ -11,7 +11,7 @@ namespace MyGuitarShop.Common.Interfaces
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> FindByIdAsync(int id);
         Task<int> InsertAsync(T dto);
-        Task<int> UpdateAsync(T dto);
+        Task<int> UpdateAsync(int id, T dto);
         Task<int> DeleteAsync(int id);
     }
 }

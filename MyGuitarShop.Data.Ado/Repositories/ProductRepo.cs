@@ -150,7 +150,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region UPDATE_TASKS
-        public async Task<int> UpdateAsync(ProductEntity entity)
+        public async Task<int> UpdateAsync(int id, ProductEntity entity)
         {
             try
             {

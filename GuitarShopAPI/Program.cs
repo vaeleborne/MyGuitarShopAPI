@@ -64,7 +64,19 @@ namespace GuitarShopAPI
 
             builder.Services.AddScoped<ProductRepo>();
 
+
+            //EFCORE Services
+            builder.Services.AddScoped<MyGuitarShop.Data.EFCore.Repositories.ProductRepository>();
+            builder.Services.AddScoped<MyGuitarShop.Data.EFCore.Repositories.CategoryRepository>();
+            builder.Services.AddScoped<MyGuitarShop.Data.EFCore.Repositories.AddressRepository>();
+            builder.Services.AddScoped<MyGuitarShop.Data.EFCore.Repositories.CustomerRepository>();
+            builder.Services.AddScoped<MyGuitarShop.Data.EFCore.Repositories.OrderRepository>();
+            builder.Services.AddScoped<MyGuitarShop.Data.EFCore.Repositories.OrderItemRepository>();
+            builder.Services.AddScoped<MyGuitarShop.Data.EFCore.Repositories.AdministratorRepository>();
+
             builder.Services.AddControllers();
+
+
         }
 
         private static void AddLogging(WebApplicationBuilder builder)
