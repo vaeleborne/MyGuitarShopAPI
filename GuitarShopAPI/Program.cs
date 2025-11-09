@@ -1,8 +1,10 @@
 
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using MyGuitarShop.Data.Ado.Factories;
 using MyGuitarShop.Data.Ado.Repositories;
+using MyGuitarShop.Data.EFCore.Context;
 using System;
 using System.Data;
 using System.Diagnostics;
@@ -55,7 +57,11 @@ namespace GuitarShopAPI
             var connection_string = builder.Configuration.GetConnectionString("MyGuitarShop")
                 ?? throw new InvalidOperationException("MyGuitarShop connection string not found.");
 
-            builder.Services.AddSingleton(new SqlConnectionFactory(connection_string));
+            builder.Services.AddSingleton(new SqlConnectionFactory(connection_string)); //ADO.NET Specific
+
+            builder.Services.AddDbContextFactory<MyGuitarShopContext>(options => 
+                options.UseSqlServer(connection_string)); //EF CORE Specific
+
             builder.Services.AddScoped<ProductRepo>();
 
             builder.Services.AddControllers();
