@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuitarShopAPI", "GuitarShopAPI.csproj", "{F476F118-1D17-4F9D-AB52-D11D9D1181CA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1751F400-F5F8-45CA-87E6-F7E83E537873} = {1751F400-F5F8-45CA-87E6-F7E83E537873}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyGuitarShop.Common", "..\MyGuitarShop.Common\MyGuitarShop.Common.csproj", "{F9528DA6-93A4-41C3-9F49-2CE86FE7E4D5}"
 EndProject
@@ -11,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyGuitarShop.Data.Ado", "..
 	ProjectSection(ProjectDependencies) = postProject
 		{F9528DA6-93A4-41C3-9F49-2CE86FE7E4D5} = {F9528DA6-93A4-41C3-9F49-2CE86FE7E4D5}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyGuitarShop.Data.EFCore", "..\MyGuitarShop.Data.EFCore\MyGuitarShop.Data.EFCore.csproj", "{1751F400-F5F8-45CA-87E6-F7E83E537873}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +35,10 @@ Global
 		{C2DB8C07-4F79-4E6C-8F0B-905C0E801ADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2DB8C07-4F79-4E6C-8F0B-905C0E801ADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2DB8C07-4F79-4E6C-8F0B-905C0E801ADC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1751F400-F5F8-45CA-87E6-F7E83E537873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1751F400-F5F8-45CA-87E6-F7E83E537873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1751F400-F5F8-45CA-87E6-F7E83E537873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1751F400-F5F8-45CA-87E6-F7E83E537873}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

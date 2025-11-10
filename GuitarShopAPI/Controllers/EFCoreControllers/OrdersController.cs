@@ -1,0 +1,19 @@
+﻿using GuitarShopAPI.Abstract;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc;
+using MyGuitarShop.Common.DTOs;
+using MyGuitarShop.Data.EFCore.Entities;
+using MyGuitarShop.Data.EFCore.Repositories;
+
+
+namespace GuitarShopAPI.Controllers.EFCoreControllers
+{
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [ApiController]
+    public class OrdersEFCoreController(
+        OrderRepository repository,
+        ILogger<OrdersEFCoreController> logger)
+        : BaseController<OrderDTO, Order>(repository, logger)
+    {
+    }
+}

@@ -113,7 +113,7 @@ namespace GuitarShopAPI.Controllers
                     product.ListPrice = dto.ListPrice!.Value;
                     product.DiscountPercent = dto.DiscountPercent!.Value;
 
-                    await repo.UpdateAsync(product);
+                    await repo.UpdateAsync(product.ProductID, product);
                     return Ok(product);
                 }
                 else
