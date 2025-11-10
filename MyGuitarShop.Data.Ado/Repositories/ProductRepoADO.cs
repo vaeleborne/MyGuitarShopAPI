@@ -89,7 +89,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                                 parameters);
 
                 //Reader Parsing
-                var product = reader != null ? await RepoHelpers.GetSingleProductFromReader(reader) : null;
+                var product = reader != null ? await GetSingleProductFromReader(reader) : null;
                 return product;
             }
             catch (Exception ex)
@@ -116,7 +116,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                                 parameters);
 
                 //Reader Parsing
-                var product = reader != null ? await RepoHelpers.GetSingleProductFromReader(reader) : null;
+                var product = reader != null ? await GetSingleProductFromReader(reader) : null;
                 return product;
             }
             catch (Exception ex)
@@ -139,7 +139,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                 using SqlDataReader? reader = await RepoHelpers.ConnectAndGetReader(connectionFactory, "SELECT * FROM Products");
 
                 //Reader Parsing
-                var products = reader != null ? await RepoHelpers.GetProductsFromReader(reader) : null;
+                var products = reader != null ? await GetProductsFromReader(reader) : null;
                 return products ?? new List<ProductEntityADO>();
             }
             catch (Exception ex)
@@ -202,6 +202,62 @@ namespace MyGuitarShop.Data.Ado.Repositories
                 logger.LogError(ex.Message, "Error deleting the product");
                 throw new Exception(ex.Message, ex);
             }
+        }
+        #endregion
+
+        #region HELPERS
+        private static async Task<ProductEntityADO> GetSingleProductFromReader(SqlDataReader reader)
+        {
+            try
+            {
+                await reader.ReadAsync();
+                var product = new ProductEntityADO
+                {
+                    ProductID = reader.GetInt32(reader.GetOrdinal("ProductID")),
+                    CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
+                    ProductCode = reader.GetString(reader.GetOrdinal("ProductCode")),
+                    ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
+                    Description = reader.GetString(reader.GetOrdinal("Description")),
+                    ListPrice = reader.GetDecimal(reader.GetOrdinal("ListPrice")),
+                    DiscountPercent = reader.GetDecimal(reader.GetOrdinal("DiscountPercent")),
+                    DateAdded = reader.GetDateTime(reader.GetOrdinal("DateAdded"))
+                };
+
+                return product;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private static async Task<List<ProductEntityADO>> GetProductsFromReader(SqlDataReader reader)
+        {
+            var products = new List<ProductEntityADO>();
+            try
+            {
+                while (await reader.ReadAsync())
+                {
+                    var product = new ProductEntityADO
+                    {
+                        ProductID = reader.GetInt32(reader.GetOrdinal("ProductID")),
+                        CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
+                        ProductCode = reader.GetString(reader.GetOrdinal("ProductCode")),
+                        ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
+                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                        ListPrice = reader.GetDecimal(reader.GetOrdinal("ListPrice")),
+                        DiscountPercent = reader.GetDecimal(reader.GetOrdinal("DiscountPercent")),
+                        DateAdded = reader.GetDateTime(reader.GetOrdinal("DateAdded"))
+                    };
+                    products.Add(product);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return products;
         }
         #endregion
 

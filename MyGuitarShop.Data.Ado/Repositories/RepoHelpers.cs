@@ -92,58 +92,6 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
         }
 
-        public static async Task<ProductEntityADO> GetSingleProductFromReader(SqlDataReader reader)
-        {
-            try
-            {
-                await reader.ReadAsync();
-                var product = new ProductEntityADO
-                {
-                    ProductID = reader.GetInt32(reader.GetOrdinal("ProductID")),
-                    CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
-                    ProductCode = reader.GetString(reader.GetOrdinal("ProductCode")),
-                    ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
-                    Description = reader.GetString(reader.GetOrdinal("Description")),
-                    ListPrice = reader.GetDecimal(reader.GetOrdinal("ListPrice")),
-                    DiscountPercent = reader.GetDecimal(reader.GetOrdinal("DiscountPercent")),
-                    DateAdded = reader.GetDateTime(reader.GetOrdinal("DateAdded"))
-                };
 
-                return product;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public static async Task<List<ProductEntityADO>> GetProductsFromReader(SqlDataReader reader)
-        {
-            var products = new List<ProductEntityADO>();
-            try
-            {
-                while (await reader.ReadAsync())
-                {
-                    var product = new ProductEntityADO
-                    {
-                        ProductID = reader.GetInt32(reader.GetOrdinal("ProductID")),
-                        CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
-                        ProductCode = reader.GetString(reader.GetOrdinal("ProductCode")),
-                        ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
-                        Description = reader.GetString(reader.GetOrdinal("Description")),
-                        ListPrice = reader.GetDecimal(reader.GetOrdinal("ListPrice")),
-                        DiscountPercent = reader.GetDecimal(reader.GetOrdinal("DiscountPercent")),
-                        DateAdded = reader.GetDateTime(reader.GetOrdinal("DateAdded"))
-                    };
-                    products.Add(product);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
-            return products;
-        }
     }
 }
