@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace MyGuitarShop.Data.EFCore.Entities;
 
@@ -23,5 +24,6 @@ public partial class Address
 
     public int Disabled { get; set; }
 
+    [JsonIgnore]
     public virtual Customer? Customer { get; set; }
 }

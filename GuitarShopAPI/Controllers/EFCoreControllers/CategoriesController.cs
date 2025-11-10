@@ -9,10 +9,10 @@ namespace GuitarShopAPI.Controllers.EFCoreControllers
 {
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController(
-        ProductRepository repository,
-        ILogger<ProductsEFCoreController> logger)
-        : BaseController<ProductDTO, Product>(repository, logger)
+    public class CategoriesEFCoreController(
+        CategoryRepository repository,
+        ILogger<CategoriesEFCoreController> logger)
+        : BaseController<CategoryDTO, Category>(repository, logger)
     {
     }
 }

@@ -9,10 +9,10 @@ namespace GuitarShopAPI.Controllers.EFCoreControllers
 {
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
-    public class AdministratorsController(
-        ProductRepository repository,
-        ILogger<ProductsEFCoreController> logger)
-        : BaseController<ProductDTO, Product>(repository, logger)
+    public class AdministratorsEFCoreController(
+        AdministratorRepository repository,
+        ILogger<AdministratorsEFCoreController> logger)
+        : BaseController<AdministratorDTO, Administrator>(repository, logger)
     {
     }
 }

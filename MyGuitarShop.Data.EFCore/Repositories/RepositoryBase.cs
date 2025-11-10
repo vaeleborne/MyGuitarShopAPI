@@ -14,22 +14,22 @@ namespace MyGuitarShop.Data.EFCore.Repositories
         : IRepository<TEntity>
         where TEntity : class
     {
-        private readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
+        protected readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync() =>
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync() =>
             await _dbSet.ToListAsync();
 
-        public async Task<TEntity?> FindByIdAsync(int id) =>
+        public virtual async Task<TEntity?> FindByIdAsync(int id) =>
             await _dbSet.FindAsync(id);
 
-        public async Task<int> InsertAsync(TEntity entity)
+        public virtual async Task<int> InsertAsync(TEntity entity)
         {
             await _dbSet.AddAsync(entity);
 
             return await dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> UpdateAsync(int id, TEntity dto)
+        public virtual async Task<int> UpdateAsync(int id, TEntity dto)
         {
             var existingEntity = await _dbSet.FindAsync(id);
 
@@ -41,7 +41,7 @@ namespace MyGuitarShop.Data.EFCore.Repositories
             return await dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteAsync(int id)
+        public virtual async Task<int> DeleteAsync(int id)
         {
             var entity = await _dbSet.FindAsync(id);
 

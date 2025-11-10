@@ -14,5 +14,20 @@ namespace GuitarShopAPI.Controllers.EFCoreControllers
         ILogger<CustomersEFCoreController> logger)
         : BaseController<CustomerDTO, Customer>(repository, logger)
     {
+        [HttpGet("details")]
+        public async Task<IActionResult> GetAllWithDetailsAsync()
+        {
+            try
+            {
+                var entities = await repository.GetAllWithDetailsAsync();
+
+                return entities.Any() ? Ok(entities) : NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error fetching entities");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }

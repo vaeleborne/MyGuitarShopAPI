@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace MyGuitarShop.Data.EFCore.Entities;
 
@@ -27,6 +28,7 @@ public partial class Order
 
     public int BillingAddressId { get; set; }
 
+    [JsonIgnore]
     public virtual Customer? Customer { get; set; }
 
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
