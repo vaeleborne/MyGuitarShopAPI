@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Data.SqlClient;
 using MyGuitarShop.Data.Ado.Factories;
+using MyGuitarShop.Data.Ado.Repositories;
 using System;
 using System.Data;
 using System.Diagnostics;
@@ -19,8 +20,6 @@ namespace GuitarShopAPI
 
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-
-
                 AddServices(builder);
 
                 // Add services to the container.
@@ -28,6 +27,7 @@ namespace GuitarShopAPI
                 builder.Services.AddControllers();
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
+                AddLogging(builder);
 
                 var app = builder.Build();
 
@@ -56,6 +56,8 @@ namespace GuitarShopAPI
                 ?? throw new InvalidOperationException("MyGuitarShop connection string not found.");
 
             builder.Services.AddSingleton(new SqlConnectionFactory(connection_string));
+            builder.Services.AddScoped<ProductRepo>();
+
             builder.Services.AddControllers();
         }
 
