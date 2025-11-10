@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace MyGuitarShop.Data.Ado.Repositories
 {
-    public class ProductRepo
+    public class ProductRepoADO
     (
-        ILogger<ProductRepo> logger,
+        ILogger<ProductRepoADO> logger,
         SqlConnectionFactory connectionFactory
     ) 
     :  IRepository<ProductEntityADO> 

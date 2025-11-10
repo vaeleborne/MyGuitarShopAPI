@@ -59,6 +59,7 @@ namespace GuitarShopAPI
 
             builder.Services.AddSingleton(new SqlConnectionFactory(connection_string)); //ADO.NET Specific
             builder.Services.AddScoped<ProductRepoADO>();
+            builder.Services.AddScoped<AdministratorRepoADO>();
 
             builder.Services.AddDbContextFactory<MyGuitarShopContext>(options =>
             options.UseSqlServer(connection_string)); //EF CORE Specific

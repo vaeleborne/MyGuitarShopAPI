@@ -8,10 +8,21 @@ namespace MyGuitarShop.Common.Interfaces
 {
     public interface IRepository<T>
     {
+        #region CREATE_ROUTES
+        Task<int> InsertAsync(T dto);
+        #endregion
+
+        #region READ_ROUTES
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> FindByIdAsync(int id);
-        Task<int> InsertAsync(T dto);
+        #endregion
+
+        #region UPDATE_ROUTES
         Task<int> UpdateAsync(int id, T dto);
+        #endregion
+
+        #region DELETE_ROUTES
         Task<int> DeleteAsync(int id);
+        #endregion
     }
 }

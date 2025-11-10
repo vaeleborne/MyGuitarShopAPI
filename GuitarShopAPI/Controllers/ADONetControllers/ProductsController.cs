@@ -13,7 +13,7 @@ namespace GuitarShopAPI.Controllers.ADONetControllers
     [ApiController]
     public class ProductsADONetController(
         ILogger<ProductsADONetController> logger,
-        ProductRepo repo) 
+        ProductRepoADO repo) 
         : BaseController<ProductDTO, ProductEntityADO>(repo, logger)
     {
 
