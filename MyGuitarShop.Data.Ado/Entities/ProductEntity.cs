@@ -9,20 +9,26 @@ namespace MyGuitarShop.Data.Ado.Entities
 {
     public class ProductEntity
     {
-        public required int ProductID { get; set; }
+        [Key]
+        public  int ProductID { get; set; }
         public int? CategoryID { get; set; }
 
+        [Required]
         [MaxLength(10)]
-        public required string ProductCode { get; set; }
+        public  string ProductCode { get; set; }
 
+        [Required]
         [MaxLength(255)]
-        public required string ProductName {  get; set; }
+        public  string ProductName {  get; set; }
 
-        public required string Description { get; set; }
+        [Required]
+        public  string Description { get; set; }
 
-        public required decimal ListPrice { get; set; }
+        [Required]
+        public  decimal? ListPrice { get; set; }
 
-        public required decimal DiscountPercent { get; set; }
+        [Required]
+        public  decimal? DiscountPercent { get; set; }
 
         public DateTime? DateAdded { get; set; }
     }
