@@ -92,12 +92,12 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
         }
 
-        public static async Task<ProductEntity> GetSingleProductFromReader(SqlDataReader reader)
+        public static async Task<ProductEntityADO> GetSingleProductFromReader(SqlDataReader reader)
         {
             try
             {
                 await reader.ReadAsync();
-                var product = new ProductEntity
+                var product = new ProductEntityADO
                 {
                     ProductID = reader.GetInt32(reader.GetOrdinal("ProductID")),
                     CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
@@ -117,14 +117,14 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
         }
 
-        public static async Task<List<ProductEntity>> GetProductsFromReader(SqlDataReader reader)
+        public static async Task<List<ProductEntityADO>> GetProductsFromReader(SqlDataReader reader)
         {
-            var products = new List<ProductEntity>();
+            var products = new List<ProductEntityADO>();
             try
             {
                 while (await reader.ReadAsync())
                 {
-                    var product = new ProductEntity
+                    var product = new ProductEntityADO
                     {
                         ProductID = reader.GetInt32(reader.GetOrdinal("ProductID")),
                         CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),

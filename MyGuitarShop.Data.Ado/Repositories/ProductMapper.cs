@@ -10,7 +10,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 {
     public class ProductMapper
     {
-        public static ProductDTO ToDto(ProductEntity entity)
+        public static ProductDTO ToDto(ProductEntityADO entity)
         {
             return new ProductDTO()
             {
@@ -25,12 +25,12 @@ namespace MyGuitarShop.Data.Ado.Repositories
             };
         }
 
-        public static ProductEntity ToEntity(ProductDTO dto)
+        public static ProductEntityADO ToEntity(ProductDTO dto)
         {
             dto.ProductID ??= 0;
             dto.DateAdded ??= DateTime.UtcNow;
 
-            return new ProductEntity()
+            return new ProductEntityADO()
             {
                 ProductID = dto.ProductID.Value,
                 CategoryID = dto.CategoryID,

@@ -17,10 +17,10 @@ namespace MyGuitarShop.Data.Ado.Repositories
         ILogger<ProductRepo> logger,
         SqlConnectionFactory connectionFactory
     ) 
-    :  IRepository<ProductEntity> 
+    :  IRepository<ProductEntityADO> 
     {
         #region CREATION_TASKS
-        public async Task<int> InsertAsync(ProductEntity entity)
+        public async Task<int> InsertAsync(ProductEntityADO entity)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region READ_TASKS
-        public async Task<ProductEntity?> FindByIdAsync(int id)
+        public async Task<ProductEntityADO?> FindByIdAsync(int id)
         {
             try
             {
@@ -98,7 +98,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
 
         }
-        public async Task<ProductEntity?> FindByUniqueAsync(string productName)
+        public async Task<ProductEntityADO?> FindByUniqueAsync(string productName)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         /// </summary>
         /// <returns>A list of Products, or null </returns>
         /// <exception cref="Exception">Will log then throw again</exception>
-        public async Task<IEnumerable<ProductEntity>> GetAllAsync()
+        public async Task<IEnumerable<ProductEntityADO>> GetAllAsync()
         {
             try
             {
@@ -139,7 +139,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
                 //Reader Parsing
                 var products = reader != null ? await RepoHelpers.GetProductsFromReader(reader) : null;
-                return products ?? new List<ProductEntity>();
+                return products ?? new List<ProductEntityADO>();
             }
             catch (Exception ex)
             {
@@ -150,7 +150,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region UPDATE_TASKS
-        public async Task<int> UpdateAsync(int id, ProductEntity entity)
+        public async Task<int> UpdateAsync(int id, ProductEntityADO entity)
         {
             try
             {

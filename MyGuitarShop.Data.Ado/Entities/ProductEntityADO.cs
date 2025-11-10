@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyGuitarShop.Data.Ado.Entities
 {
-    public class ProductEntity
+    public class ProductEntityADO
     {
         [Key]
         public  int ProductID { get; set; }
