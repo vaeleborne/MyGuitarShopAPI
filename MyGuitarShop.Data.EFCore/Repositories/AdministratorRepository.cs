@@ -9,7 +9,7 @@ using MyGuitarShop.Data.EFCore.Entities;
 
 namespace MyGuitarShop.Data.EFCore.Repositories
 {
-    public class AdministratorRepository(MyGuitarShopContext dbContext) : RepositoryBase<Product>(dbContext)
+    public class AdministratorRepository(MyGuitarShopContext dbContext) : RepositoryBase<Administrator>(dbContext)
     {
 
     }

@@ -58,11 +58,12 @@ namespace GuitarShopAPI
                 ?? throw new InvalidOperationException("MyGuitarShop connection string not found.");
 
             builder.Services.AddSingleton(new SqlConnectionFactory(connection_string)); //ADO.NET Specific
-
-            builder.Services.AddDbContextFactory<MyGuitarShopContext>(options => 
-                options.UseSqlServer(connection_string)); //EF CORE Specific
-
             builder.Services.AddScoped<ProductRepo>();
+
+            builder.Services.AddDbContextFactory<MyGuitarShopContext>(options =>
+            options.UseSqlServer(connection_string)); //EF CORE Specific
+
+
 
 
             //EFCORE Services

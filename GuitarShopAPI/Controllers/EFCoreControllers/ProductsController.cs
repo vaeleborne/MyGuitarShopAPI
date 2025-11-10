@@ -5,7 +5,6 @@ using MyGuitarShop.Common.DTOs;
 using MyGuitarShop.Data.EFCore.Entities;
 using MyGuitarShop.Data.EFCore.Repositories;
 
-
 namespace GuitarShopAPI.Controllers.EFCoreControllers
 {
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
