@@ -11,7 +11,7 @@ namespace MyGuitarShop.Common.DTOs
     public class OrderItemsDTO
     {
         [Key]
-        public int ItemId { get; set; }
+        public int? ItemId { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "OrderId Must Be A Positive Integer!")]
         public int? OrderId { get; set; }

@@ -10,7 +10,7 @@ namespace MyGuitarShop.Common.DTOs
     public class CategoryDTO
     {
         [Key]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         [Required]
         [StringLength(255)]

@@ -4,6 +4,7 @@ using MyGuitarShop.Common.DTOs;
 using MyGuitarShop.Common.Interfaces;
 using MyGuitarShop.Data.Ado.Entities;
 using MyGuitarShop.Data.Ado.Factories;
+using MyGuitarShop.Data.Ado.Repositories.Mappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

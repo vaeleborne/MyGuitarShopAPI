@@ -1,8 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using MyGuitarShop.Common.DTOs;
 using MyGuitarShop.Common.Interfaces;
 using MyGuitarShop.Data.Ado.Entities;
 using MyGuitarShop.Data.Ado.Factories;
+using MyGuitarShop.Data.Ado.Repositories.Mappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,41 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #region CREATE_ROUTES
         public async Task<int> InsertAsync(AdministratorEntityADO entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //Setting up the command and parameters
+                AdministratorDTO dto = AdministratorMapper.ToDto(entity);
+                var parameters = new List<SqlParameterModel>
+                {
+                    new("@EmailAddress", System.Data.SqlDbType.VarChar, dto.EmailAddress!),
+                    new("@Password", System.Data.SqlDbType.VarChar, dto.Password!),
+                    new("@FirstName", System.Data.SqlDbType.VarChar, dto.FirstName!),
+                    new("@LastName", System.Data.SqlDbType.VarChar, dto.LastName!)
+                };
+
+                const string cmd = @"INSERT INTO Administrators
+                                    (
+                                        EmailAddress,
+                                        Password,
+                                        FirstName,
+                                        LastName
+                                    )
+                                    VALUES
+                                    (
+                                        @EmailAddress,
+                                        @Password,
+                                        @FirstName,
+                                        @LastName
+                                    )";
+
+                //Execute the command
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message, "Error inserting the Administrator!");
+                throw new Exception(ex.Message, ex);
+            }
         }
         #endregion CREATE_ROUTES
 
@@ -59,21 +95,114 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
         public async Task<AdministratorEntityADO?> FindByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //Connection Setup & Execution
+                var parameters = new List<SqlParameterModel>
+                {
+                    new("@AdminID", System.Data.SqlDbType.Int, id)
+                };
+
+                var cmd = $"SELECT * FROM Administrators WHERE AdminID = @AdminID";
+                using SqlDataReader? reader = await RepoHelpers.ConnectAndGetReader(
+                                                connectionFactory,
+                                                cmd,
+                                                parameters);
+
+                //Reader Parsing
+                var admin = reader != null ? await GetSingleAdminFromReader(reader) : null;
+                return admin;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message, $"Error retrieving admin with id: {id}", ex);
+                throw new Exception(ex.Message, ex);
+            }
         }
         #endregion READ_ROUTES
 
         #region UPDATE_ROUTES
         public async Task<int> UpdateAsync(int id, AdministratorEntityADO entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //Setting up the command and parameters
+                AdministratorDTO dto = AdministratorMapper.ToDto(entity);
+                //Connection Setup & Execution
+                var parameters = new List<SqlParameterModel>
+                {
+                    new("@AdminID", System.Data.SqlDbType.Int, id),
+                    new("@EmailAddress", System.Data.SqlDbType.VarChar, dto.EmailAddress!),
+                    new("@Password", System.Data.SqlDbType.VarChar, dto.Password!),
+                    new("@FirstName", System.Data.SqlDbType.VarChar, dto.FirstName!),
+                    new("@LastName", System.Data.SqlDbType.VarChar, dto.LastName!)
+                };
+
+                const string cmd = @"UPDATE Administrators
+                                        SET EmailAddress = @EmailAddress, 
+                                            Password = @Password,
+                                            FirstName = @FirstName,
+                                            LastName = @LastName
+                                        WHERE AdminID = @AdminID";
+
+                //Execute the command
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message, "Error updating the Adminstrator!");
+                throw new Exception(ex.Message, ex);
+            }
         }
         #endregion
 
         #region DELETE_ROUTES
         public async Task<int> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //Connection Setup & Execution
+                var parameters = new List<SqlParameterModel>
+                {
+                    new("@AdminID", System.Data.SqlDbType.Int, id)
+                };
+
+                var cmd = @"DELETE Administrators 
+                                WHERE AdminID = @AdminID";
+
+                //Execute the command
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message, "Error deleting the administrator");
+                throw new Exception(ex.Message, ex);
+            }
+        }
+        #endregion
+
+        #region HELPERS
+        private async Task<AdministratorEntityADO> GetSingleAdminFromReader(SqlDataReader reader)
+        {
+            try
+            {
+                await reader.ReadAsync();
+                var admin = new AdministratorEntityADO()
+                {
+                    AdminId = reader.GetInt32(reader.GetOrdinal("AdminID")),
+                    EmailAddress = reader.GetString(reader.GetOrdinal("EmailAddress")),
+                    Password = reader.GetString(reader.GetOrdinal("Password")),
+                    FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                    LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                };
+
+
+                return admin;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         #endregion
     }

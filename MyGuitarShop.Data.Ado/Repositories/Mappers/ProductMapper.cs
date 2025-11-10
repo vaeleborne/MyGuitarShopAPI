@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyGuitarShop.Data.Ado.Repositories
+namespace MyGuitarShop.Data.Ado.Repositories.Mappers
 {
     public class ProductMapper
     {

@@ -10,7 +10,7 @@ namespace MyGuitarShop.Common.DTOs
     public class AdministratorDTO
     {
         [Key]
-        public int AdminId { get; set; }
+        public int? AdminId { get; set; }
 
         [Required]
         [StringLength(255)]

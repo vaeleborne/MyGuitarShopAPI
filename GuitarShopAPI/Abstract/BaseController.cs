@@ -107,11 +107,11 @@ namespace GuitarShopAPI.Abstract
 
                 var numberDeleted = await repo.DeleteAsync(id);
 
-                return Ok($"{numberDeleted} products deleted.");
+                return Ok($"{numberDeleted} enitites deleted.");
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error deleting Product.");
+                logger.LogError(ex, "Error deleting Entity.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
