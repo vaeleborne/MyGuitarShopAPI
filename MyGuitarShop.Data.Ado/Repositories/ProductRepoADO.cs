@@ -206,7 +206,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region HELPERS
-        private static async Task<ProductEntityADO> GetSingleProductFromReader(SqlDataReader reader)
+        private static async Task<ProductEntityADO?> GetSingleProductFromReader(SqlDataReader reader)
         {
             try
             {
@@ -227,7 +227,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return null;
             }
         }
 

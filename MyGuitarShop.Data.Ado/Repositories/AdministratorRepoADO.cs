@@ -72,7 +72,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
                 while (await  reader.ReadAsync())
                 {
-                    admins.Add(GetAdminFromReader(reader));
+                    admins.Add(GetAdminFromReader(reader) ?? throw new Exception("Error Selecting Administrators"));
                 }
 
                 return admins;
@@ -176,7 +176,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region HELPERS
-        private async Task<AdministratorEntityADO> GetSingleAdminFromReader(SqlDataReader reader)
+        private async Task<AdministratorEntityADO?> GetSingleAdminFromReader(SqlDataReader reader)
         {
             try
             {
@@ -190,7 +190,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
         }
 
-        private AdministratorEntityADO GetAdminFromReader(SqlDataReader reader)
+        private AdministratorEntityADO? GetAdminFromReader(SqlDataReader reader)
         {
             try
             {
@@ -207,7 +207,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return null;
             }
         }
         #endregion

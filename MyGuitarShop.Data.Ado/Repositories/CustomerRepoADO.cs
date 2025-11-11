@@ -78,7 +78,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
                 while (await reader.ReadAsync())
                 {
-                    customers.Add(GetCustomerFromReader(reader));
+                    customers.Add(GetCustomerFromReader(reader) ?? throw new Exception("Error Selecting Customers"));
                 }
 
                 return customers;
@@ -210,7 +210,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region HELPERS
-        private async Task<CustomerEntityADO> GetSingleCustomerFromReader(SqlDataReader reader)
+        private async Task<CustomerEntityADO?> GetSingleCustomerFromReader(SqlDataReader reader)
         {
             try
             {
@@ -223,7 +223,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
         }
 
-        private CustomerEntityADO GetCustomerFromReader(SqlDataReader reader)
+        private CustomerEntityADO? GetCustomerFromReader(SqlDataReader reader)
         {
             try
             {
@@ -244,7 +244,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
             catch(Exception ex) 
             {
-                throw new Exception(ex.Message, ex);
+                return null;
             }
         }
         #endregion

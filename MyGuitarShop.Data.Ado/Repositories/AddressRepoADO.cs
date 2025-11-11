@@ -86,7 +86,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
                 while (await reader.ReadAsync())
                 {
-                    addresses.Add(GetAddressFromReader(reader));
+                    addresses.Add(GetAddressFromReader(reader) ?? throw new Exception("Error Selecting Addresses"));
                 }
 
                 return addresses;
@@ -196,7 +196,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region HELPERS
-        private AddressEntityADO GetAddressFromReader(SqlDataReader reader)
+        private AddressEntityADO? GetAddressFromReader(SqlDataReader reader)
         {
             try
             {
@@ -220,7 +220,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex);
+                return null;
             }
         }
         #endregion

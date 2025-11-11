@@ -63,7 +63,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
                 while (await reader.ReadAsync())
                 {
-                    categories.Add(GetCategoryFromReader(reader));
+                    categories.Add(GetCategoryFromReader(reader) ?? throw new Exception("Error Selecting Categories"));
                 }
 
                 return categories;
@@ -184,7 +184,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region HELPERS
-        private async Task<CategoryEntityADO> GetSingleCategoryFromReader(SqlDataReader reader)
+        private async Task<CategoryEntityADO?> GetSingleCategoryFromReader(SqlDataReader reader)
         {
             try
             {
@@ -197,7 +197,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
         }
 
-        private CategoryEntityADO GetCategoryFromReader(SqlDataReader reader)
+        private CategoryEntityADO? GetCategoryFromReader(SqlDataReader reader)
         {
             try
             {
@@ -211,7 +211,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex);
+                return null;
             }
         }
 
