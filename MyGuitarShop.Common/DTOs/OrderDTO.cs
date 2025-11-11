@@ -15,7 +15,7 @@ namespace MyGuitarShop.Common.DTOs
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "CustomerId Must Be A Positive Integer!")]
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
 
         [Required]
         public DateTime OrderDate { get; set; }
@@ -47,6 +47,8 @@ namespace MyGuitarShop.Common.DTOs
         [Required]
         [StringLength(7, MinimumLength = 7, ErrorMessage = "CardExpires must be exactly 7 characters long!")]
         public string CardExpires { get; set; }
+
+        public List<OrderItemsDTO?> Items { get; set; }
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "BillingAddressId Must Be A Positive Integer!")]

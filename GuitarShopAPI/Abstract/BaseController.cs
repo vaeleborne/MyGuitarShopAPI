@@ -14,7 +14,7 @@ namespace GuitarShopAPI.Abstract
 
         #region CREATE_ROUTES
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(TDto dto)
+        public virtual async Task<IActionResult> CreateAsync(TDto dto)
         {
             try
             {
