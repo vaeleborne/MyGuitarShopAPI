@@ -25,7 +25,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
             try
             {
                 //Setup Connection For Transaction
-                using var conn = await connectionFactory.OpenSqlConnectionAsync();
+                await using var conn = await connectionFactory.OpenSqlConnectionAsync();
                 using var transaction = conn.BeginTransaction();
 
                 try
@@ -209,40 +209,125 @@ namespace MyGuitarShop.Data.Ado.Repositories
             //TODO: THIS NEEDS TO BE A TRANSACTION!
             try
             {
-                object P(object? v) => v ?? DBNull.Value;
-                //Setting up the command and parameters
-                OrderDTO dto = OrderMapper.ToDto(entity);
-                //Connection Setup & Execution
-                var parameters = new List<SqlParameterModel>
+
+                await using var conn = await connectionFactory.OpenSqlConnectionAsync();
+
+                using var transaction = conn.BeginTransaction();
+
+                try
                 {
-                    new("@OrderID", System.Data.SqlDbType.Int, id),
-                    new("@CustomerID", System.Data.SqlDbType.Int, P(dto.CustomerId)),
-                    new("@OrderDate", System.Data.SqlDbType.DateTime, dto.OrderDate),
-                    new("@ShipAmount", System.Data.SqlDbType.Money, dto.ShipAmount),
-                    new("@TaxAmount", System.Data.SqlDbType.Money,dto.TaxAmount),
-                    new("@ShipDate", System.Data.SqlDbType.DateTime, P(dto.ShipDate)),
-                    new("@ShipAddressID", System.Data.SqlDbType.Int, dto.ShipAddressId),
-                    new("@CardType", System.Data.SqlDbType.VarChar, dto.CardType),
-                    new("@CardNumber", System.Data.SqlDbType.VarChar, dto.CardNumber),
-                    new("@CardExpires", System.Data.SqlDbType.VarChar, dto.CardExpires),
-                    new("@BillingAddressID", System.Data.SqlDbType.Int, dto.BillingAddressId)
-                };
+                    //Local Helper Function
+                    object P(object? v) => v ?? DBNull.Value;
 
-                const string cmd = @"UPDATE Orders
-                                        SET CustomerID = @CustomerID,
-                                            OrderDate = @OrderDate,
-                                            ShipAmount = @ShipAmount,
-                                            TaxAmount = @TaxAmount,
-                                            ShipDate = @ShipDate,
-                                            ShipAddressID = @ShipAddressID,
-                                            CardType = @CardType,
-                                            CardNumber = @CardNumber,
-                                            CardExpires = @CardExpires,
-                                            BillingAddressID = @BillingAddressID
-                                        WHERE OrderID = @OrderID";
+                    //First, Update Orders:
+                    using (var updateCmd = conn.CreateCommand())
+                    {
+                        updateCmd.Transaction = transaction;
+                        updateCmd.CommandText = @"  UPDATE Orders
+                                                       SET CustomerID = @CustomerID,
+                                                           OrderDate = @OrderDate,
+                                                           ShipAmount = @ShipAmount,
+                                                           TaxAmount = @TaxAmount,
+                                                           ShipDate = @ShipDate,
+                                                           ShipAddressID = @ShipAddressID,
+                                                           CardType = @CardType,
+                                                           CardNumber = @CardNumber,
+                                                           CardExpires = @CardExpires,
+                                                           BillingAddressID = @BillingAddressID
+                                                     WHERE OrderID = @OrderID;";
 
-                //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                        updateCmd.Parameters.Add(new SqlParameter("@OrderID", System.Data.SqlDbType.Int) { Value = id });
+                        updateCmd.Parameters.Add(new SqlParameter("@CustomerID", System.Data.SqlDbType.Int) { Value = P(entity.CustomerID) });
+                        updateCmd.Parameters.Add(new SqlParameter("@OrderDate", System.Data.SqlDbType.DateTime) { Value = entity.OrderDate });
+
+                 
+                        var pShip = new SqlParameter("@ShipAmount", System.Data.SqlDbType.Money) { Value = entity.ShipAmount };
+                        var pTax = new SqlParameter("@TaxAmount", System.Data.SqlDbType.Money) { Value = entity.TaxAmount };
+                        updateCmd.Parameters.Add(pShip);
+                        updateCmd.Parameters.Add(pTax);
+
+                        updateCmd.Parameters.Add(new SqlParameter("@ShipDate", System.Data.SqlDbType.DateTime) { Value = P(entity.ShipDate) });
+                        updateCmd.Parameters.Add(new SqlParameter("@ShipAddressID", System.Data.SqlDbType.Int) { Value = entity.ShipAddressID });
+                        updateCmd.Parameters.Add(new SqlParameter("@CardType", System.Data.SqlDbType.VarChar) { Value = entity.CardType });
+                        updateCmd.Parameters.Add(new SqlParameter("@CardNumber", System.Data.SqlDbType.VarChar) { Value = entity.CardNumber });
+                        updateCmd.Parameters.Add(new SqlParameter("@CardExpires", System.Data.SqlDbType.VarChar) { Value = entity.CardExpires });
+                        updateCmd.Parameters.Add(new SqlParameter("@BillingAddressID", System.Data.SqlDbType.Int) { Value = entity.BillingAddressID });
+
+                        var rowsUpdated = await updateCmd.ExecuteNonQueryAsync();
+
+                        // If rowsUpdated == 0 then,  treat as NotFound / throw
+                        if (rowsUpdated == 0)
+                            throw new InvalidOperationException($"Order with id {id} not found or nothing could be updated.");
+
+                        //Replace OrderItems
+                        
+                        //First, delete the existing OrderItems
+                        using (var delCmd = conn.CreateCommand())
+                        {
+                            delCmd.Transaction = transaction;
+                            delCmd.CommandText = "DELETE FROM OrderItems WHERE OrderID = @OrderID";
+                            delCmd.Parameters.Add(new SqlParameter("@OrderID", System.Data.SqlDbType.Int) { Value = id });
+                            await delCmd.ExecuteNonQueryAsync();
+                        }
+
+                        //Now, Insert OrderItems, if any exists
+                        if (entity.Items != null && entity.Items.Any())
+                        {
+                            using var itemCmd = conn.CreateCommand();
+                            itemCmd.Transaction = transaction;
+                            itemCmd.CommandText = @"    INSERT INTO OrderItems 
+                                                        (
+                                                            OrderID, 
+                                                            ProductID, 
+                                                            ItemPrice, 
+                                                            DiscountAmount, 
+                                                            Quantity
+                                                        )
+                                                        VALUES 
+                                                        (
+                                                            @OrderID, 
+                                                            @ProductID, 
+                                                            @ItemPrice, 
+                                                            @DiscountAmount, 
+                                                            @Quantity
+                                                        );";
+
+                            // Create parameters to be reused within a loop
+                            itemCmd.Parameters.Add(new SqlParameter("@OrderID", System.Data.SqlDbType.Int));
+                            itemCmd.Parameters.Add(new SqlParameter("@ProductID", System.Data.SqlDbType.Int));
+                            var pItemPrice = new SqlParameter("@ItemPrice", System.Data.SqlDbType.Money);
+                            var pDiscount = new SqlParameter("@DiscountAmount", System.Data.SqlDbType.Money);
+                            var pQty = new SqlParameter("@Quantity", System.Data.SqlDbType.Int);
+                            itemCmd.Parameters.Add(pItemPrice);
+                            itemCmd.Parameters.Add(pDiscount);
+                            itemCmd.Parameters.Add(pQty);
+
+                            foreach (var item in entity.Items)
+                            {
+                                // Simple Validation
+                                if (item.ProductID <= 0) throw new ArgumentException("OrderItem.ProductID must be > 0");
+                                if (item.Quantity <= 0) throw new ArgumentException("OrderItem.Quantity must be > 0");
+
+                                itemCmd.Parameters["@OrderID"].Value = id;
+                                itemCmd.Parameters["@ProductID"].Value = item.ProductID;
+                                itemCmd.Parameters["@ItemPrice"].Value = item.ItemPrice;
+                                itemCmd.Parameters["@DiscountAmount"].Value = item.DiscountAmount;
+                                itemCmd.Parameters["@Quantity"].Value = item.Quantity;
+
+                                await itemCmd.ExecuteNonQueryAsync();
+                            }
+                        }
+
+                        //Success! Commit Transaction
+                        transaction.Commit();
+                        return rowsUpdated;
+                    }
+                }
+                catch (Exception transactEx)
+                {
+                    transaction.Rollback();
+                    throw new Exception(transactEx.Message, transactEx);
+                }
             }
             catch (Exception ex)
             {
@@ -257,17 +342,47 @@ namespace MyGuitarShop.Data.Ado.Repositories
         {
             try
             {
-                //Connection Setup & Execution
-                var parameters = new List<SqlParameterModel>
+                await using var conn = await connectionFactory.OpenSqlConnectionAsync();
+                using var transaction = conn.BeginTransaction();
+
+                try
                 {
-                    new("@OrderID", System.Data.SqlDbType.Int, id)
-                };
+                    //Local Helper
+                    object P(object? v) => v ?? DBNull.Value;
 
-                var cmd = @"DELETE Orders 
-                                WHERE OrderID = @OrderID";
+                    //Delete the OrderItems for the order
+                    int itemsDeleted = 0;
+                    await using (var delItemsCmd = conn.CreateCommand())
+                    {
+                        delItemsCmd.Transaction = transaction;
+                        delItemsCmd.CommandText = "DELETE OrderItems WHERE OrderID = @OrderID";
+                        delItemsCmd.Parameters.Add(new SqlParameter("@OrderID", System.Data.SqlDbType.Int) { Value = id });
 
-                //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                        itemsDeleted = await delItemsCmd.ExecuteNonQueryAsync();
+                    }
+
+                    //Delete the Order itself
+                    int ordersDeleted = 0;
+                    await using (var delOrderCmd = conn.CreateCommand())
+                    {
+                        delOrderCmd.Transaction = transaction;
+                        delOrderCmd.CommandText = "DELETE Orders WHERE OrderID = @OrderID";
+                        delOrderCmd.Parameters.Add(new SqlParameter("@OrderID", System.Data.SqlDbType.Int) { Value = id });
+
+                        ordersDeleted = await delOrderCmd.ExecuteNonQueryAsync();
+                    }
+
+                    //Commit changes
+                    transaction.Commit();
+
+                    return ordersDeleted;
+                }
+                catch (Exception transactEx)
+                {
+                    transaction.Rollback();
+                    logger.LogError("Unable To Delete Order!");
+                    throw new Exception(transactEx.Message, transactEx);
+                } 
             }
             catch (Exception ex)
             {
