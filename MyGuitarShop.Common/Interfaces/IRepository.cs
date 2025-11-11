@@ -9,7 +9,7 @@ namespace MyGuitarShop.Common.Interfaces
     public interface IRepository<T>
     {
         #region CREATE_ROUTES
-        Task<int> InsertAsync(T dto);
+        Task<int> InsertAsync(T entity);
         #endregion
 
         #region READ_ROUTES
@@ -18,7 +18,7 @@ namespace MyGuitarShop.Common.Interfaces
         #endregion
 
         #region UPDATE_ROUTES
-        Task<int> UpdateAsync(int id, T dto);
+        Task<int> UpdateAsync(int id, T entity);
         #endregion
 
         #region DELETE_ROUTES
