@@ -1,4 +1,12 @@
-﻿using MyGuitarShop.Common.DTOs;
+﻿/**
+ * @file    OrderMapper.cs
+ * @author  Dylan Hawke (Morgan)
+ * @brief   Defines a class to convert 'Order' 
+ *              DTOs to Entities and vice versa.
+ * @date    2025-11-11
+ * @version 1.0
+ */
+using MyGuitarShop.Common.DTOs;
 using MyGuitarShop.Data.Ado.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,8 +16,16 @@ using System.Threading.Tasks;
 
 namespace MyGuitarShop.Data.Ado.Repositories.Mappers
 {
+    /// <summary>
+    /// Mapper class for converting Order DTOs and Entities.
+    /// </summary>
     public class OrderMapper
     {
+        /// <summary>
+        /// Converts an entity to a dto.
+        /// </summary>
+        /// <param name="entity">The Order Entity To Convert</param>
+        /// <returns>An Order DTO</returns>
         public static OrderDTO ToDto(OrderEntityADO entity)
         {
             return new OrderDTO()
@@ -28,6 +44,11 @@ namespace MyGuitarShop.Data.Ado.Repositories.Mappers
             };
         }
 
+        /// <summary>
+        /// Converts a dto to an entity.
+        /// </summary>
+        /// <param name="dto">The Order DTO To Convert</param>
+        /// <returns>An Order Entity</returns>
         public static OrderEntityADO ToEntity(OrderDTO dto)
         {
             dto.OrderId ??= 0;
