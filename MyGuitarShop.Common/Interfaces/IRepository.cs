@@ -23,6 +23,7 @@ namespace MyGuitarShop.Common.Interfaces
 
         #region DELETE_ROUTES
         Task<int> DeleteAsync(int id);
+
         #endregion
     }
 }

@@ -109,7 +109,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                     new("@ProductName", System.Data.SqlDbType.VarChar, productName)
                 };
 
-                var cmd = $"SELECT * FROM Products WHERE productName = @ProductName";
+                var cmd = $"SELECT * FROM Products WHERE ProductName = @ProductName";
                 using SqlDataReader? reader = await RepoHelpers.ConnectAndGetReader(
                                                 connectionFactory,
                                                 cmd,
