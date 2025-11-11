@@ -78,20 +78,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
                 while (await reader.ReadAsync())
                 {
-                    int shippingOrd = reader.GetOrdinal("ShippingAddressID");
-                    int billingOrd = reader.GetOrdinal("BillingAddressID");
-
-                    var customer = new CustomerEntityADO()
-                    {
-                        CustomerID = reader.GetInt32(reader.GetOrdinal("CustomerID")),
-                        EmailAddress = reader.GetString(reader.GetOrdinal("EmailAddress")),
-                        Password = reader.GetString(reader.GetOrdinal("Password")),
-                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
-                        ShippingAddressID = reader.IsDBNull(shippingOrd) ?  null : reader.GetInt32(shippingOrd),
-                        BillingAddressID = reader.IsDBNull(billingOrd) ? null : reader.GetInt32(billingOrd)
-                    };
-                    customers.Add(customer);
+                    customers.Add(GetCustomerFromReader(reader));
                 }
 
                 return customers;
@@ -228,7 +215,18 @@ namespace MyGuitarShop.Data.Ado.Repositories
             try
             {
                 await reader.ReadAsync();
+                return GetCustomerFromReader(reader);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
+        private CustomerEntityADO GetCustomerFromReader(SqlDataReader reader)
+        {
+            try
+            {
                 int shippingOrd = reader.GetOrdinal("ShippingAddressID");
                 int billingOrd = reader.GetOrdinal("BillingAddressID");
                 var customer = new CustomerEntityADO()
@@ -244,9 +242,9 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
                 return customer;
             }
-            catch (Exception ex)
+            catch(Exception ex) 
             {
-                throw new Exception(ex.Message);
+                throw new Exception(ex.Message, ex);
             }
         }
         #endregion

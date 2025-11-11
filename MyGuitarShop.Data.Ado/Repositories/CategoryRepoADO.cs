@@ -63,12 +63,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
                 while (await reader.ReadAsync())
                 {
-                    var category = new CategoryEntityADO()
-                    {
-                        CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
-                        CategoryName = reader.GetString(reader.GetOrdinal("CategoryName"))
-                    };
-                    categories.Add(category);
+                    categories.Add(GetCategoryFromReader(reader));
                 }
 
                 return categories;
@@ -194,6 +189,18 @@ namespace MyGuitarShop.Data.Ado.Repositories
             try
             {
                 await reader.ReadAsync();
+                return GetCategoryFromReader(reader);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        private CategoryEntityADO GetCategoryFromReader(SqlDataReader reader)
+        {
+            try
+            {
                 var category = new CategoryEntityADO()
                 {
                     CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
@@ -204,7 +211,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception(ex.Message, ex);
             }
         }
 

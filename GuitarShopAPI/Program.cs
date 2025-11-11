@@ -62,6 +62,7 @@ namespace GuitarShopAPI
             builder.Services.AddScoped<AdministratorRepoADO>();
             builder.Services.AddScoped<CategoryRepoADO>();
             builder.Services.AddScoped<CustomerRepoADO>();
+            builder.Services.AddScoped<AddressRepoADO>();
 
             builder.Services.AddDbContextFactory<MyGuitarShopContext>(options =>
             options.UseSqlServer(connection_string)); //EF CORE Specific

@@ -72,15 +72,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
                 while (await  reader.ReadAsync())
                 {
-                    var admin = new AdministratorEntityADO()
-                    {
-                        AdminId = reader.GetInt32(reader.GetOrdinal("AdminID")),
-                        EmailAddress = reader.GetString(reader.GetOrdinal("EmailAddress")),
-                        Password = reader.GetString(reader.GetOrdinal("Password")),
-                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                        LastName = reader.GetString(reader.GetOrdinal("LastName"))
-                    };
-                    admins.Add(admin);
+                    admins.Add(GetAdminFromReader(reader));
                 }
 
                 return admins;
@@ -119,6 +111,8 @@ namespace MyGuitarShop.Data.Ado.Repositories
                 throw new Exception(ex.Message, ex);
             }
         }
+
+        //TODO: Add FindByUnique!
         #endregion READ_ROUTES
 
         #region UPDATE_ROUTES
@@ -187,6 +181,19 @@ namespace MyGuitarShop.Data.Ado.Repositories
             try
             {
                 await reader.ReadAsync();
+
+                return GetAdminFromReader(reader);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private AdministratorEntityADO GetAdminFromReader(SqlDataReader reader)
+        {
+            try
+            {
                 var admin = new AdministratorEntityADO()
                 {
                     AdminId = reader.GetInt32(reader.GetOrdinal("AdminID")),
@@ -195,7 +202,6 @@ namespace MyGuitarShop.Data.Ado.Repositories
                     FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
                     LastName = reader.GetString(reader.GetOrdinal("LastName"))
                 };
-
 
                 return admin;
             }
