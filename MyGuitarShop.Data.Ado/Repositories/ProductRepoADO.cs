@@ -1,4 +1,13 @@
-﻿using Microsoft.Data.SqlClient;
+﻿/**
+ * @file    ProductRepoADO.cs
+ * @author  Dylan Hawke (Morgan)
+ * @brief   Defines a ProductRepo for ADO that implements
+ *              CRUD services for the Products Table, to be used
+ *              by a Controller specific to ADO in the API Project.
+ * @date    2025-11-11
+ * @version 1.0
+ */
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using MyGuitarShop.Common.DTOs;
 using MyGuitarShop.Common.Interfaces;
@@ -13,6 +22,11 @@ using System.Threading.Tasks;
 
 namespace MyGuitarShop.Data.Ado.Repositories
 {
+    /// <summary>
+    /// Implementation of the Product Repo containing CRUD services.
+    /// </summary>
+    /// <param name="logger">Logger to use</param>
+    /// <param name="connectionFactory">Factory to use for SQL connections</param>
     public class ProductRepoADO
     (
         ILogger<ProductRepoADO> logger,
@@ -20,7 +34,13 @@ namespace MyGuitarShop.Data.Ado.Repositories
     ) 
     :  IRepository<ProductEntityADO> 
     {
-        #region CREATION_TASKS
+        #region CREATION_SERVICES
+        /// <summary>
+        /// Implementation of the CREATE service to insert a new Product into the DB.
+        /// </summary>
+        /// <param name="entity">The product entity to insert</param>
+        /// <returns>The number of items inserted (success would be 1)</returns>
+        /// <exception cref="Exception">Logs exception then throws to caller.</exception>
         public async Task<int> InsertAsync(ProductEntityADO entity)
         {
             try
@@ -68,10 +88,15 @@ namespace MyGuitarShop.Data.Ado.Repositories
                 throw new Exception(ex.Message, ex);
             }
         }
-
         #endregion
 
-        #region READ_TASKS
+        #region READ_SERVICES
+        /// <summary>
+        /// Implementation of a READ service to get a Product from its ID.
+        /// </summary>
+        /// <param name="id">The id of the product to find.</param>
+        /// <returns>The Product Entity Corresponding to {id}, or null if no such product is found.</returns>
+        /// <exception cref="Exception">Logs then throws to caller.</exception>
         public async Task<ProductEntityADO?> FindByIdAsync(int id)
         {
             try
@@ -99,6 +124,13 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
 
         }
+
+        /// <summary>
+        /// Implementation of a READ service to get a Product given its unique product name.
+        /// </summary>
+        /// <param name="productName">The name of the product to find.</param>
+        /// <returns>The Product Entity Corresponding to its {productName}, or null if no such product is found.</returns>
+        /// <exception cref="Exception">Logs then throws to caller.</exception>
         public async Task<ProductEntityADO?> FindByUniqueAsync(string productName)
         {
             try
@@ -127,10 +159,10 @@ namespace MyGuitarShop.Data.Ado.Repositories
         }
 
         /// <summary>
-        /// Gets all Products from Products in the DB
+        ///  Implementation of a READ service to get all Products in the DB.
         /// </summary>
-        /// <returns>A list of Products, or null </returns>
-        /// <exception cref="Exception">Will log then throw again</exception>
+        /// <returns>A list of all Product Entities</returns>
+        /// <exception cref="Exception">Will log then throw to caller</exception>
         public async Task<IEnumerable<ProductEntityADO>> GetAllAsync()
         {
             try
@@ -150,7 +182,14 @@ namespace MyGuitarShop.Data.Ado.Repositories
         }
         #endregion
 
-        #region UPDATE_TASKS
+        #region UPDATE_SERVICES
+        /// <summary>
+        /// Implementation of an UPDATE service to update a Product given it's id, and every property.
+        /// </summary>
+        /// <param name="id">Id of the Product To update.</param>
+        /// <param name="entity">Product Entity representing what the changes should be.</param>
+        /// <returns>Number of items updates (success should be 1)</returns>
+        /// <exception cref="Exception">Logs then throws to caller.</exception>
         public async Task<int> UpdateAsync(int id, ProductEntityADO entity)
         {
             try
@@ -180,7 +219,13 @@ namespace MyGuitarShop.Data.Ado.Repositories
         }
         #endregion
 
-        #region DELETE_TASKS
+        #region DELETE_SERVICES
+        /// <summary>
+        /// Implements a DELETE service to delete a Product from the DB.
+        /// </summary>
+        /// <param name="id">Id of the Product to delete.</param>
+        /// <returns>Number of items deleted (success should be 1).</returns>
+        /// <exception cref="Exception">Logs then throws to caller.</exception>
         public async Task<int> DeleteAsync(int id)
         {
             try
@@ -206,8 +251,14 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region HELPERS
+        /// <summary>
+        /// Helper to retrieve a single ProductEntity (or null) given a reader from a query.
+        /// </summary>
+        /// <param name="reader">The reader to use</param>
+        /// <returns>A ProductEntity from the Reader, or null if one could not be found</returns>
         private static async Task<ProductEntityADO?> GetSingleProductFromReader(SqlDataReader reader)
         {
+            //Attempt to create a ProductEntity from the reader
             try
             {
                 await reader.ReadAsync();
@@ -227,13 +278,23 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
             catch (Exception ex)
             {
+                //On error, assume not found, return null.
                 return null;
             }
         }
 
+        /// <summary>
+        /// Helper to get all product entities within a given reader
+        /// </summary>
+        /// <param name="reader">The reader to use</param>
+        /// <returns>A list of Product Entities that can be found from the reader</returns>
+        /// <exception cref="Exception">Throws error if none can be found, or if there is an issue with any.</exception>
         private static async Task<List<ProductEntityADO>> GetProductsFromReader(SqlDataReader reader)
         {
+            //List to contain the entities
             var products = new List<ProductEntityADO>();
+
+            //Parse the reader, adding to the products variable as we go.
             try
             {
                 while (await reader.ReadAsync())
@@ -254,12 +315,12 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                //On error, throw error to caller for caller to handle.
+                throw new Exception(ex.Message, ex);
             }
 
             return products;
         }
         #endregion
-
     }
 }

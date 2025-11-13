@@ -1,4 +1,13 @@
-﻿using Microsoft.Data.SqlClient;
+﻿/**
+ * @file    AdministratorRepoADO.cs
+ * @author  Dylan Hawke (Morgan)
+ * @brief   Defines an AdministratorRepo for ADO that implements
+ *              CRUD services for the Administrators Table, to be used
+ *              by a Controller specific to ADO in the API Project.
+ * @date    2025-11-11
+ * @version 1.0
+ */
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using MyGuitarShop.Common.DTOs;
 using MyGuitarShop.Common.Interfaces;

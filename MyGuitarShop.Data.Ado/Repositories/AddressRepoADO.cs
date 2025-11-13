@@ -1,4 +1,13 @@
-﻿using Microsoft.Data.SqlClient;
+﻿/**
+ * @file    AddressRepoADO.cs
+ * @author  Dylan Hawke (Morgan)
+ * @brief   Defines an AddressRepo for ADO that implements
+ *              CRUD services for the Addresses Table, to be used
+ *              by a Controller specific to ADO in the API Project.
+ * @date    2025-11-11
+ * @version 1.0
+ */
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using MyGuitarShop.Common.DTOs;
 using MyGuitarShop.Common.Interfaces;
@@ -13,6 +22,11 @@ using System.Threading.Tasks;
 
 namespace MyGuitarShop.Data.Ado.Repositories
 {
+    /// <summary>
+    /// Implementation of the Address Repo containing CRUD services.
+    /// </summary>
+    /// <param name="logger">Logger to use</param>
+    /// <param name="connectionFactory">Factory to use for SQL connections</param>
     public class AddressRepoADO(
         ILogger<AddressRepoADO> logger,
         SqlConnectionFactory connectionFactory
@@ -20,6 +34,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
     : IRepository<AddressEntityADO>
 
     {
+
         #region CREATE_ROUTES
         //TODO: Update to be a transaction
         public async Task<int> InsertAsync(AddressEntityADO entity)

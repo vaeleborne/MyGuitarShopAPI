@@ -1,4 +1,11 @@
-﻿using Microsoft.Data.SqlClient;
+﻿/**
+ * @file    RepoHelpers.cs
+ * @author  Dylan Hawke (Morgan)
+ * @brief   Defines some helper functions that get used accross multiple repos.
+ * @date    2025-11-11
+ * @version 1.0
+ */
+using Microsoft.Data.SqlClient;
 using MyGuitarShop.Data.Ado.Entities;
 using MyGuitarShop.Data.Ado.Factories;
 using System;
@@ -43,11 +50,14 @@ namespace MyGuitarShop.Data.Ado.Repositories
             string cmd,
            IEnumerable<SqlParameterModel>? parameters = null)
         {
+            //Attempt to connect to the db and retrieve a Reader
             try
             {
+                //Setup connection with query command
                 var conn =  await connectionFactory.OpenSqlConnectionAsync();
                 await using var command = new SqlCommand(cmd, conn);
 
+                //Add parameters to the command if any exist
                 if(parameters != null)
                 {
                     foreach (var p in parameters)
@@ -56,26 +66,39 @@ namespace MyGuitarShop.Data.Ado.Repositories
                         param.Value = p.Value ?? DBNull.Value;
                     }
                 }
+
+                //Execute the query, returning the reader and closing the db connection
                 return await command.ExecuteReaderAsync(CommandBehavior.CloseConnection);
             }
             catch (Exception ex) 
             {
+                //On error, throw the error to the caller for it to handle
                 throw new Exception(ex.Message);
             }
         }
 
-
+        /// <summary>
+        /// Opens connection to DB to execute a non query type of command
+        /// </summary>
+        /// <param name="connectionFactory">Factory to use for the SQL connection</param>
+        /// <param name="cmd">SQL text to execute.</param>
+        /// <param name="parameters">Enumarable of SQL parameters for validation</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static async Task<int> ConnectAndExecuteNonQuery(
             SqlConnectionFactory connectionFactory,
             string cmd,
             IEnumerable<SqlParameterModel>? parameters = null
             )
         {
+            //Try to connect and execute the command
             try
             {
+                //Setup Connection and SQL command.
                 var conn = await connectionFactory.OpenSqlConnectionAsync();
                 await using var command = new SqlCommand(cmd, conn);
 
+                //Add parameters to the SqlCommand, if any exist
                 if (parameters != null)
                 {
                     foreach (var p in parameters)
@@ -84,11 +107,14 @@ namespace MyGuitarShop.Data.Ado.Repositories
                         param.Value = p.Value ?? DBNull.Value;
                     }
                 }
+
+                //Run the command.
                 return await command.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                //On error, throw the error to the caller for it to handle
+                throw new Exception(ex.Message, ex);
             }
         }
 

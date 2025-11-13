@@ -1,4 +1,13 @@
-﻿using Microsoft.Data.SqlClient;
+﻿/**
+ * @file    OrderRepoADO.cs
+ * @author  Dylan Hawke (Morgan)
+ * @brief   Defines an OrderRepo for ADO that implements
+ *              CRUD services for the Orders Table, to be used
+ *              by a Controller specific to ADO in the API Project.
+ * @date    2025-11-11
+ * @version 1.0
+ */
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using MyGuitarShop.Common.DTOs;
 using MyGuitarShop.Common.Interfaces;
@@ -20,6 +29,13 @@ namespace MyGuitarShop.Data.Ado.Repositories
     : IRepository<OrderEntityADO>
     {
         #region CREATE_ROUTES
+        /// <summary>
+        /// Implementation of the CREATE service to insert a new Order into the DB via a Transaction.
+        /// This will also create OrderItems 
+        /// </summary>
+        /// <param name="entity">The Order entity to insert</param>
+        /// <returns>The id of the newly connected</returns>
+        /// <exception cref="Exception">Logs exception then throws to caller.</exception>
         public async Task<int> InsertAsync(OrderEntityADO entity)
         {      
             try
@@ -149,6 +165,12 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region READ_ROUTES
+
+        /// <summary>
+        /// Implementation of a READ service to get all orders from the DB.
+        /// </summary>
+        /// <returns>A list of OrderEntities representing all the Orders in the DB. </returns>
+        /// <exception cref="Exception">Logs then throws to caller.</exception>
         public async Task<IEnumerable<OrderEntityADO>> GetAllAsync()
         {
             try
@@ -175,6 +197,13 @@ namespace MyGuitarShop.Data.Ado.Repositories
                 throw new Exception(ex.Message, ex);
             }
         }
+
+        /// <summary>
+        /// Implementation of a READ service to get an Order from its ID.
+        /// </summary>
+        /// <param name="id">The id of the Order to find.</param>
+        /// <returns>The Order Entity Corresponding to {id}, or null if no such product is found.</returns>
+        /// <exception cref="Exception">Logs then throws to caller.</exception>
         public async Task<OrderEntityADO?> FindByIdAsync(int id)
         {
             try
@@ -204,6 +233,15 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region UPDATE_ROUTES
+        /// <summary>
+        /// Implementation of an UPDATE service to update an Order via a Transaction, this will
+        /// update the associated OrderItems by first Deleting all of them for the OrderID, then 
+        /// creating/recreating the new OrderItems
+        /// </summary>
+        /// <param name="id">Id of the Order To update.</param>
+        /// <param name="entity">Order Entity representing what the changes should be.</param>
+        /// <returns>Number of items updates (success should be 1)</returns>
+        /// <exception cref="Exception">Logs then throws to caller.</exception>
         public async Task<int> UpdateAsync(int id, OrderEntityADO entity)
         {
             //TODO: THIS NEEDS TO BE A TRANSACTION!
@@ -338,6 +376,12 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region DELETE_ROUTES
+        /// <summary>
+        /// Implements a DELETE service to delete an Order from the DB.
+        /// </summary>
+        /// <param name="id">Id of the Order to delete.</param>
+        /// <returns>Number of items deleted (success should be 1).</returns>
+        /// <exception cref="Exception">Logs then throws to caller.</exception>
         public async Task<int> DeleteAsync(int id)
         {
             try
@@ -393,6 +437,12 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region HELPERS
+        /// <summary>
+        /// Converts a SqlParameterModel to a SqlParameter.
+        /// </summary>
+        /// <param name="model">The SqlParameterModel to convert.</param>
+        /// <returns>The SqlParameter from the model.</returns>
+        /// <exception cref="ArgumentException">Logs then throws to caller.</exception>
         private SqlParameter ToSqlParameter(SqlParameterModel model)
         {
             if (model == null) throw new ArgumentException(nameof(model));
@@ -402,6 +452,12 @@ namespace MyGuitarShop.Data.Ado.Repositories
             param.Value = model.Value ?? DBNull.Value;
             return param;
         }
+
+        /// <summary>
+        /// Adds parameters to a SqlCommand
+        /// </summary>
+        /// <param name="cmd">The command to add parameters to.</param>
+        /// <param name="parameters">An enumarable of SqplParameterModels representing the parameters to add.</param>
         private void AddParameters(SqlCommand cmd, IEnumerable<SqlParameterModel> parameters)
         {
             foreach (var param in parameters)
@@ -410,6 +466,11 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
         }
 
+        /// <summary>
+        /// Gets an Order from a reader.
+        /// </summary>
+        /// <param name="reader">The reader to parse for the Order.</param>
+        /// <returns>An Order, or Null if none exists.</returns>
         private OrderEntityADO? GetOrderFromReader(SqlDataReader reader)
         {
             try
