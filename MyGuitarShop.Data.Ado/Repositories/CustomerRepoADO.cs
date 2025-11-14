@@ -29,6 +29,12 @@ namespace MyGuitarShop.Data.Ado.Repositories
     : IRepository<CustomerEntityADO>
     {
         #region CREATE_ROUTES
+        /// <summary>
+        /// Implementation of the CREATE service to insert a new Customer into the DB.
+        /// </summary>
+        /// <param name="entity">The Customer entity to insert</param>
+        /// <returns>The number of items inserted (success would be 1)</returns>
+        /// <exception cref="Exception">Logs exception then throws to caller.</exception>
         public async Task<int> InsertAsync(CustomerEntityADO entity)
         {
             try
@@ -76,6 +82,11 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region READ_ROUTES
+        /// <summary>
+        ///  Implementation of a READ service to get all Customers in the DB.
+        /// </summary>
+        /// <returns>A list of all Customer Entities</returns>
+        /// <exception cref="Exception">Will log then throw to caller</exception>
         public async Task<IEnumerable<CustomerEntityADO>> GetAllAsync()
         {
             try
@@ -99,6 +110,13 @@ namespace MyGuitarShop.Data.Ado.Repositories
                 throw new Exception(ex.Message, ex);
             }
         }
+
+        /// <summary>
+        /// Implementation of a READ service to get a Customer from the CustomerID.
+        /// </summary>
+        /// <param name="id">The id of the Customer to find.</param>
+        /// <returns>The Customer Entity Corresponding to {id}, or null if no such customer is found.</returns>
+        /// <exception cref="Exception">Logs then throws to caller.</exception>
         public async Task<CustomerEntityADO?> FindByIdAsync(int id)
         {
             try
@@ -126,6 +144,12 @@ namespace MyGuitarShop.Data.Ado.Repositories
             }
         }
 
+        /// <summary>
+        /// Implementation of a READ service to get a Customer given their Email Address.
+        /// </summary>
+        /// <param name="email">The email to lookup.</param>
+        /// <returns>The Product Entity Corresponding to its {email}, or null if no such product is found.</returns>
+        /// <exception cref="Exception">Logs then throws to caller.</exception>
         public async Task<CustomerEntityADO?> FindByUniqueAsync(string email)
         {
             try
