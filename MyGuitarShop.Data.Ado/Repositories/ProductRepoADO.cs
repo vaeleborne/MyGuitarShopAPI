@@ -322,5 +322,6 @@ namespace MyGuitarShop.Data.Ado.Repositories
             return products;
         }
         #endregion
+
     }
 }
