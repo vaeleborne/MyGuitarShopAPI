@@ -6,6 +6,7 @@ using MongoDB.Driver;
 using MyGuitarShop.Data.Ado.Factories;
 using MyGuitarShop.Data.Ado.Repositories;
 using MyGuitarShop.Data.EFCore.Context;
+using MyGuitarShop.Data.MongoDb.Services;
 using System;
 using System.Data;
 using System.Diagnostics;
@@ -97,6 +98,8 @@ namespace GuitarShopAPI
                 var mongoClient = sp.GetRequiredService<IMongoClient>();
                 return mongoClient.GetDatabase("MyGuitarShop");
             });
+
+            builder.Services.AddScoped<MongoProductService>();
 
             builder.Services.AddControllers();
         }

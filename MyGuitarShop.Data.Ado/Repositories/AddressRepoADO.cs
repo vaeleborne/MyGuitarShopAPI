@@ -31,13 +31,13 @@ namespace MyGuitarShop.Data.Ado.Repositories
         ILogger<AddressRepoADO> logger,
         SqlConnectionFactory connectionFactory
     )
-    : IRepository<AddressEntityADO>
+    : IRepository<AddressEntityADO, int>
 
     {
 
         #region CREATE_ROUTES
         //TODO: Update to be a transaction
-        public async Task<int> InsertAsync(AddressEntityADO entity)
+        public async Task<bool> InsertAsync(AddressEntityADO entity)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                     )";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {
@@ -142,7 +142,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region UPDATE_ROUTES
-        public async Task<int> UpdateAsync(int id, AddressEntityADO entity)
+        public async Task<bool> UpdateAsync(int id, AddressEntityADO entity)
         {
             try
             {
@@ -175,7 +175,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                         WHERE AddressID = @AddressID";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {
@@ -186,7 +186,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region DELETE_ROUTES
-        public async Task<int> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
@@ -200,7 +200,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                 WHERE AddressID = @AddressID";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {

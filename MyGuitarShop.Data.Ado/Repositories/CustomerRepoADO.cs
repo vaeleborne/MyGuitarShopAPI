@@ -26,7 +26,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         ILogger<CustomerRepoADO> logger,
         SqlConnectionFactory connectionFactory
     )
-    : IRepository<CustomerEntityADO>
+    : IRepository<CustomerEntityADO, int>
     {
         #region CREATE_ROUTES
         /// <summary>
@@ -35,7 +35,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         /// <param name="entity">The Customer entity to insert</param>
         /// <returns>The number of items inserted (success would be 1)</returns>
         /// <exception cref="Exception">Logs exception then throws to caller.</exception>
-        public async Task<int> InsertAsync(CustomerEntityADO entity)
+        public async Task<bool> InsertAsync(CustomerEntityADO entity)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                     )";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {
@@ -179,7 +179,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region UPDATE_ROUTES
-        public async Task<int> UpdateAsync(int id, CustomerEntityADO entity)
+        public async Task<bool> UpdateAsync(int id, CustomerEntityADO entity)
         {
             try
             {
@@ -207,7 +207,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                         WHERE CustomerID = @CustomerID";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {
@@ -218,7 +218,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region DELETE_ROUTES
-        public async Task<int> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
@@ -232,7 +232,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                 WHERE CustomerID = @CustomerID";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {

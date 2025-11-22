@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace MyGuitarShop.Common.Interfaces
 {
-    public interface IRepository<T>
+    public interface IRepository<T, in TKey>
     {
         #region CREATE_ROUTES
-        Task<int> InsertAsync(T entity);
+        Task<bool> InsertAsync(T entity);
         #endregion
 
         #region READ_ROUTES
         Task<IEnumerable<T>> GetAllAsync();
-        Task<T?> FindByIdAsync(int id);
+        Task<T?> FindByIdAsync(TKey id);
         #endregion
 
         #region UPDATE_ROUTES
-        Task<int> UpdateAsync(int id, T entity);
+        Task<bool> UpdateAsync(TKey id, T entity);
         #endregion
 
         #region DELETE_ROUTES
-        Task<int> DeleteAsync(int id);
+        Task<bool> DeleteAsync(TKey id);
 
         #endregion
     }

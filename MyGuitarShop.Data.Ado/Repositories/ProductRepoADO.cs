@@ -32,7 +32,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         ILogger<ProductRepoADO> logger,
         SqlConnectionFactory connectionFactory
     ) 
-    :  IRepository<ProductEntityADO> 
+    :  IRepository<ProductEntityADO, int> 
     {
         #region CREATION_SERVICES
         /// <summary>
@@ -41,7 +41,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         /// <param name="entity">The product entity to insert</param>
         /// <returns>The number of items inserted (success would be 1)</returns>
         /// <exception cref="Exception">Logs exception then throws to caller.</exception>
-        public async Task<int> InsertAsync(ProductEntityADO entity)
+        public async Task<bool> InsertAsync(ProductEntityADO entity)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                         )";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {
@@ -190,7 +190,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         /// <param name="entity">Product Entity representing what the changes should be.</param>
         /// <returns>Number of items updates (success should be 1)</returns>
         /// <exception cref="Exception">Logs then throws to caller.</exception>
-        public async Task<int> UpdateAsync(int id, ProductEntityADO entity)
+        public async Task<bool> UpdateAsync(int id, ProductEntityADO entity)
         {
             try
             {
@@ -209,7 +209,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                         WHERE ProductID = @ProductID";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {
@@ -226,7 +226,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         /// <param name="id">Id of the Product to delete.</param>
         /// <returns>Number of items deleted (success should be 1).</returns>
         /// <exception cref="Exception">Logs then throws to caller.</exception>
-        public async Task<int> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
@@ -240,7 +240,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                         WHERE ProductID = @ProductID";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {

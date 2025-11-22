@@ -26,10 +26,10 @@ namespace MyGuitarShop.Data.Ado.Repositories
         ILogger<CategoryRepoADO> logger,
         SqlConnectionFactory connectionFactory
     )
-    : IRepository<CategoryEntityADO>
+    : IRepository<CategoryEntityADO, int>
     {
         #region CREATE_ROUTES
-        public async Task<int> InsertAsync(CategoryEntityADO entity)
+        public async Task<bool> InsertAsync(CategoryEntityADO entity)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                     )";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {
@@ -139,7 +139,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region UPDATE_ROUTES
-        public async Task<int> UpdateAsync(int id, CategoryEntityADO entity)
+        public async Task<bool> UpdateAsync(int id, CategoryEntityADO entity)
         {
             try
             {
@@ -157,7 +157,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                         WHERE CategoryID = @CategoryID";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {
@@ -168,7 +168,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         #endregion
 
         #region DELETE_ROUTES
-        public async Task<int> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
@@ -182,7 +182,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                                 WHERE CategoryID = @CategoryID";
 
                 //Execute the command
-                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters);
+                return await RepoHelpers.ConnectAndExecuteNonQuery(connectionFactory, cmd, parameters) != 0 ? true : false;
             }
             catch (Exception ex)
             {

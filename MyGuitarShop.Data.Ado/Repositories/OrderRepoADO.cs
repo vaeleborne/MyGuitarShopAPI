@@ -26,7 +26,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         ILogger<OrderRepoADO> logger,
         SqlConnectionFactory connectionFactory
     )
-    : IRepository<OrderEntityADO>
+    : IRepository<OrderEntityADO, int>
     {
         #region CREATE_ROUTES
         /// <summary>
@@ -36,7 +36,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         /// <param name="entity">The Order entity to insert</param>
         /// <returns>The id of the newly connected</returns>
         /// <exception cref="Exception">Logs exception then throws to caller.</exception>
-        public async Task<int> InsertAsync(OrderEntityADO entity)
+        public async Task<bool> InsertAsync(OrderEntityADO entity)
         {      
             try
             {
@@ -147,7 +147,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
                     //Success, commit
                     transaction.Commit();
-                    return newOrderId;
+                    return newOrderId != 0 ? true : false;
                 }
                 catch (Exception transactEx)
                 {
@@ -242,7 +242,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         /// <param name="entity">Order Entity representing what the changes should be.</param>
         /// <returns>Number of items updates (success should be 1)</returns>
         /// <exception cref="Exception">Logs then throws to caller.</exception>
-        public async Task<int> UpdateAsync(int id, OrderEntityADO entity)
+        public async Task<bool> UpdateAsync(int id, OrderEntityADO entity)
         {
             //TODO: THIS NEEDS TO BE A TRANSACTION!
             try
@@ -358,7 +358,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
 
                         //Success! Commit Transaction
                         transaction.Commit();
-                        return rowsUpdated;
+                        return rowsUpdated != 0 ? true : false;
                     }
                 }
                 catch (Exception transactEx)
@@ -382,7 +382,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
         /// <param name="id">Id of the Order to delete.</param>
         /// <returns>Number of items deleted (success should be 1).</returns>
         /// <exception cref="Exception">Logs then throws to caller.</exception>
-        public async Task<int> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
@@ -419,7 +419,7 @@ namespace MyGuitarShop.Data.Ado.Repositories
                     //Commit changes
                     transaction.Commit();
 
-                    return ordersDeleted;
+                    return ordersDeleted != 0 ? true : false;
                 }
                 catch (Exception transactEx)
                 {

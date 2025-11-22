@@ -7,7 +7,7 @@ namespace GuitarShopAPI.Abstract
     [ApiController]
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     public abstract class BaseController<TDto, TEntity>(
-        IRepository<TEntity> repo,
+        IRepository<TEntity, int> repo,
         ILogger<BaseController<TDto, TEntity>> logger
         ) : ControllerBase where TEntity : class, new()
     {
