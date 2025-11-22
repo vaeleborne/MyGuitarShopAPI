@@ -8,8 +8,9 @@ namespace MyGuitarShop.Common.Enums
 {
     public enum CategoryType
     {
-        Guitar,
-        Bass,
-        Accessory
+        Basses,
+        Drums,
+        Guitars,
+        Keyboards
     }
 }
